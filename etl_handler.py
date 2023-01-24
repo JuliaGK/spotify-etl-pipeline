@@ -1,8 +1,10 @@
 import config
 import spotipy
+import logging
 from spotipy.oauth2 import SpotifyClientCredentials
 
 from extract_spotify import ExtractSpotifyAPI
+from load_spotify import LoadSpotify
 from transform_spotify import TransformSpotify
 
 class ETLHandler():
@@ -17,8 +19,13 @@ class ETLHandler():
 
         df = TransformSpotify().playlist_json_to_df(json_playlist)
 
-        print(df)
+        load = LoadSpotify()
+        load.run(df)
+
 
     def get_api_connection(self) -> spotipy.Spotify:
-        client_credentials_manager = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
-        return spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        try:
+            client_credentials_manager = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
+            return spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        except Exception:
+            logging.exception("Error getting Spotify API connection")
