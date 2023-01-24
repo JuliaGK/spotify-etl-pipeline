@@ -15,7 +15,9 @@ class ETLHandler():
         extract_api = ExtractSpotifyAPI(self.sp)
         json_playlist = extract_api.get_playlist_json(playlist_url_top_100)
 
-        TransformSpotify().playlist_json_to_df(json_playlist)
+        df = TransformSpotify().playlist_json_to_df(json_playlist)
+
+        print(df)
 
     def get_api_connection(self) -> spotipy.Spotify:
         client_credentials_manager = SpotifyClientCredentials(client_id=config.SPOTIPY_CLIENT_ID, client_secret=config.SPOTIPY_CLIENT_SECRET)
